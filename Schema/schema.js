@@ -20,7 +20,7 @@ const CreateTable=()=>{
 
                 
                 )`
-    
+
                 db.exec(QueriiAuth)
 
             db.exec(Querii)
@@ -69,6 +69,29 @@ const rootType= new GraphQLObjectType({
     name:"Query",
     description:"All Queries Here",
     fields:()=>({
+        Book:{
+            type:BookType,
+            args:{
+                id:{
+                    type:GraphQLInt
+                }
+            },
+            resolve:(parent,args)=>{
+                return new Promise((resolve,reject)=>{
+            
+                    db.all(`select * from Books where id=(?)`,args.id,(err,rows)=>{
+                        if(err){
+                            reject(err)
+                        }
+                        else{
+                            resolve(rows[0])
+                        }
+                    })
+                })
+
+            }
+
+        },
         Books:{
             type:new GraphQLList(BookType),
             resolve:()=>{
@@ -153,7 +176,7 @@ const rootMutation=new GraphQLObjectType({
                 
         
         },
-        addauthor:{
+        addAuthor:{
             type:AuthorType,
             args:{
                 AuthorId:{
